@@ -1,0 +1,292 @@
+* {
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.flex-column {
+    flex-direction: column;
+}
+
+.screen {
+    background: white;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Home Screen Styles */
+#home-screen {
+    padding: 60px 40px;
+}
+
+#home-screen h1 {
+    color: #333;
+    font-size: 48px;
+    margin-bottom: 40px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.btn {
+    display: inline-block;
+    background: #667eea;
+    color: white;
+    text-decoration: none;
+    padding: 18px 36px;
+    font-size: 20px;
+    border-radius: 8px;
+    margin: 10px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: none;
+    min-width: 200px;
+}
+
+.btn:hover {
+    background: #5a6fd8;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.btn.secondary {
+    background: #ffc107;
+    color: #212529;
+}
+
+.btn.secondary:hover {
+    background: #e0a800;
+}
+
+/* Game Screen Styles */
+/* display property handled by v-if */
+
+.hud {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+}
+
+.hud-item {
+    text-align: center;
+}
+
+.hud-main-text {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.hud-prefix {
+    font-size: 14px;
+    color: #666;
+}
+
+#question {
+    font-size: 24px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+    line-height: 1.4;
+}
+
+.choice-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.choice-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    background: #e9ecef;
+}
+
+.choice-prefix {
+    background: #667eea;
+    color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-right: 15px;
+    font-size: 18px;
+}
+
+.choice-text {
+    font-size: 16px;
+    color: #333;
+    flex: 1;
+    margin: 0;
+}
+
+.correct {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.correct .choice-prefix {
+    background-color: #1e7e34 !important;
+}
+
+.correct .choice-text {
+    color: white !important;
+}
+
+.incorrect {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+.incorrect .choice-prefix {
+    background-color: #c82333 !important;
+}
+
+.incorrect .choice-text {
+    color: white !important;
+}
+
+/* End Game Screen Styles */
+/* display property handled by v-if */
+
+#final-score {
+    font-size: 48px;
+    color: #667eea;
+    margin: 20px 0;
+}
+
+.end-message {
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+.end-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+button { /* Replaced specific IDs with general button styles */
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    min-width: 120px;
+}
+
+button:hover {
+    background: #5a6fd8;
+}
+
+button[disabled] { /* Styles for disabled save button */
+    background: #218838 !important;
+    cursor: not-allowed !important;
+    opacity: 0.8;
+}
+
+/* Specific button styles */
+#save-btn { /* Still keeping ID for clarity if needed, but not strictly for styling anymore */
+    background: #28a745;
+}
+
+#highscore-btn { /* Same for highscore button */
+    background: #ffc107;
+    color: #212529;
+}
+
+#highscore-btn:hover {
+    background: #e0a800;
+}
+
+#next-btn {
+    background: #6f42c1;
+    color: white;
+}
+
+#next-btn:hover {
+    background: #5a32a3;
+}
+
+#home-btn, #home-from-scores-btn {
+    background: #6c757d;
+}
+
+#home-btn:hover, #home-from-scores-btn:hover {
+    background: #5a6268;
+}
+
+/* High Score Screen Styles */
+/* display property handled by v-if */
+
+#highscore-list {
+    margin: 30px 0;
+    min-height: 200px;
+    width: 100%; /* Ensure list takes full width */
+}
+
+.highscore-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.highscore-name {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+}
+
+.highscore-score {
+    font-size: 20px;
+    color: #667eea;
+    font-weight: bold;
+}
+
+.no-scores {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 40px 20px;
+}
