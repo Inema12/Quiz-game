@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Quiz Game</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .flex-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .flex-column {
+            flex-direction: column;
+        }
+
+        .screen {
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+
+        /* Home Screen Styles */
+        #home-screen {
+            padding: 60px 40px;
+        }
+
+        #home-screen h1 {
+            color: #333;
+            font-size: 48px;
+            margin-bottom: 40px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            padding: 18px 36px;
+            font-size: 20px;
+            border-radius: 8px;
+            margin: 10px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn.secondary {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn.secondary:hover {
+            background: #e0a800;
+        }
+
+        /* Game Screen Styles */
+        #game-screen {
+            display: none;
+        }
+
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .hud-item {
+            text-align: center;
+        }
+
+        .hud-main-text {
+            font-size: 20px;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .hud-prefix {
+            font-size: 14px;
+            color: #666;
+        }
+
+        #question {
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .choice-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .choice-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: #e9ecef;
+        }
+
+        .choice-prefix {
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        .choice-text {
+            font-size: 16px;
+            color: #333;
+            flex: 1;
+            margin: 0;
+        }
+
+        .correct {
+            background-color: #28a745 !important;
+            color: white !important;
+        }
+
+        .correct .choice-prefix {
+            background-color: #1e7e34 !important;
+        }
+
+        .correct .choice-text {
+            color: white !important;
+        }
+
+        .incorrect {
+            background-color: #dc3545 !important;
+            color: white !important;
+        }
+
+        .incorrect .choice-prefix {
+            background-color: #c82333 !important;
+        }
+
+        .incorrect .choice-text {
+            color: white !important;
+        }
+
+        /* End Game Screen Styles */
+        #end-game-screen {
+            display: none;
+        }
+
+        #final-score {
+            font-size: 48px;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .end-message {
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+        .end-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        #restart-btn, #save-btn, #highscore-btn, #back-btn, #next-btn, #home-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            min-width: 120px;
+        }
+
+        #restart-btn:hover, #save-btn:hover, #highscore-btn:hover, #back-btn:hover, #next-btn:hover, #home-btn:hover {
+            background: #5a6fd8;
+        }
+
+        #save-btn {
+            background: #28a745;
+        }
+
+        #save-btn:disabled {
+            background: #218838 !important;
+            cursor: not-allowed !important;
+            opacity: 0.8;
+        }
+
+        #highscore-btn {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        #highscore-btn:hover {
+            background: #e0a800;
+        }
+
+        #next-btn {
+            background: #6f42c1;
+            color: white;
+        }
+
+        #next-btn:hover {
+            background: #5a32a3;
+        }
+
+        #home-btn {
+            background: #6c757d;
+        }
+
+        #home-btn:hover {
+            background: #5a6268;
+        }
+
+        /* High Score Screen Styles */
+        #highscore-screen {
+            display: none;
+        }
+
+        #highscore-list {
+            margin: 30px 0;
+            min-height: 200px;
+        }
+
+        .highscore-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            margin: 10px 0;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .highscore-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .highscore-score {
+            font-size: 20px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .no-scores {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+            padding: 40px 20px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Home Screen -->
+        <div class="flex-center flex-column screen" id="home-screen">
+            <h1>Quick Quiz Game</h1>
+            <button onclick="startQuiz()" class="btn">Play</button>
+            <button onclick="showHighScoresFromHome()" class="btn secondary">High Scores</button>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game-screen" class="screen flex-column">
+            <div class="hud">
+                <div class="hud-item">
+                    <p id="progressText" class="hud-prefix">Question</p>
+                    <h1 class="hud-main-text" id="progressBarFull">1/10</h1>
+                </div>
+                <div class="hud-item">
+                    <p class="hud-prefix">Score</p>
+                    <h1 class="hud-main-text" id="score">0</h1>
+                </div>
+            </div>
+            
+            <h2 id="question">What is the answer to this question?</h2>
+            
+            <div class="choice-container">
+                <p class="choice-prefix">A</p>
+                <p class="choice-text" data-number="1">Choice 1</p>
+            </div>
+            <div class="choice-container">
+                <p class="choice-prefix">B</p>
+                <p class="choice-text" data-number="2">Choice 2</p>
+            </div>
+            <div class="choice-container">
+                <p class="choice-prefix">C</p>
+                <p class="choice-text" data-number="3">Choice 3</p>
+            </div>
+            <div class="choice-container">
+                <p class="choice-prefix">D</p>
+                <p class="choice-text" data-number="4">Choice 4</p>
+            </div>
+        </div>
+        
+        <!-- End Game Screen -->
+        <div id="end-game-screen" class="screen flex-center flex-column">
+            <h1 class="end-message">Quiz Complete!</h1>
+            <h2 id="final-score">0</h2>
+            <div class="end-buttons">
+                <button id="save-btn">Save Score</button>
+                <button id="restart-btn">Play Again</button>
+                <button id="highscore-btn">High Scores</button>
+                <button id="next-btn">Next Quiz</button>
+                <button id="home-btn">Home</button>
+            </div>
+        </div>
+        
+        <!-- High Score Screen -->
+        <div id="highscore-screen" class="screen flex-center flex-column">
+            <h1 class="end-message">High Scores</h1>
+            <div id="highscore-list"></div>
+            <div class="end-buttons">
+                <button id="back-btn">Back</button>
+                <button id="home-from-scores-btn">Home</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const homeScreen = document.getElementById("home-screen");
+        const gameScreen = document.getElementById("game-screen");
+        const endGameScreen = document.getElementById("end-game-screen");
+        const highscoreScreen = document.getElementById("highscore-screen");
+        
+        const question = document.getElementById("question");
+        const choices = Array.from(document.getElementsByClassName("choice-text"));
+        const questionCounterText = document.getElementById("progressBarFull");
+        const scoreText = document.getElementById("score");
+        const finalScoreElement = document.getElementById("final-score");
+        const highscoreList = document.getElementById("highscore-list");
+        
+        // Buttons
+        const restartBtn = document.getElementById("restart-btn");
+        const saveBtn = document.getElementById("save-btn");
+        const highscoreBtn = document.getElementById("highscore-btn");
+        const backBtn = document.getElementById("back-btn");
+        const nextBtn = document.getElementById("next-btn");
+        const homeBtn = document.getElementById("home-btn");
+        const homeFromScoresBtn = document.getElementById("home-from-scores-btn");
+
+        // Game Variables
+        let currentQuestion = {};
+        let acceptingAnswers = false;
+        let score = 0;
+        let questionCounter = 0;
+        let availableQuestions = [];
+        let previousScreen = 'home';
+
+        const questions = [
+            {
+                question: "Inside which HTML element do we put the Javascript?",
+                choice1: "<script>",
+                choice2: "<javascript>",
+                choice3: "<js>",
+                choice4: "<scripting>",
+                answer: 1
+            },
+            {
+                question: "What is the correct syntax for referring to an external script called 'xxx.js'?",
+                choice1: "<script href='xxx.js'>",
+                choice2: "<script name='xxx.js'>",
+                choice3: "<script src='xxx.js'>",
+                choice4: "<script file='xxx.js'>",
+                answer: 3
+            },
+            {
+                question: "What is the correct syntax for referring to an external style called 'xxx.css'?",
+                choice1: "<link file='xxx.css'>",
+                choice2: "<link name='xxx.css'>",
+                choice3: "<link src='xxx.css'>",
+                choice4: "<link href='xxx.css'>",
+                answer: 4
+            },
+            {
+                question: "JavaScript is a _______________ language.",
+                choice1: "Object-Oriented",
+                choice2: "High-level",
+                choice3: "Assembly-language",
+                choice4: "Object-Based",
+                answer: 4
+            },
+            {
+                question: "Initialization of variables can be done by writing which operator between variable name and operand value?",
+                choice1: "EQUALS",
+                choice2: "=",
+                choice3: "VALUE",
+                choice4: "==",
+                answer: 2
+            },
+            {
+                question: "Which of the following keywords is used to define a variable in JavaScript?",
+                choice1: "var",
+                choice2: "let",
+                choice3: "Both A and B",
+                choice4: "None of the above",
+                answer: 3
+            },
+            {
+                question: "Variable Scope determines the accessibility (visibility) of variables.",
+                choice1: "TRUE",
+                choice2: "FALSE",
+                choice3: "Sometimes",
+                choice4: "Depends on browser",
+                answer: 1
+            },
+            {
+                question: "A variable stores the data value that can be changed later.",
+                choice1: "TRUE",
+                choice2: "FALSE",
+                choice3: "Only for strings",
+                choice4: "Only for numbers",
+                answer: 1
+            },
+            {
+                question: "Any variable declared inside a block such as a function can be accessed anywhere in a program.",
+                choice1: "TRUE",
+                choice2: "FALSE",
+                choice3: "Only with var",
+                choice4: "Only with let",
+                answer: 2
+            },
+            {
+                question: "A named function definition executes automatically.",
+                choice1: "TRUE",
+                choice2: "FALSE",
+                choice3: "Sometimes",
+                choice4: "Only in strict mode",
+                answer: 2
+            }
+        ];
+
+        const CORRECT_BONUS = 10;
+        const MAX_QUESTIONS = 10;
+
+        // Screen Navigation Functions
+        const showScreen = (screenToShow) => {
+            homeScreen.style.display = 'none';
+            gameScreen.style.display = 'none';
+            endGameScreen.style.display = 'none';
+            highscoreScreen.style.display = 'none';
+            
+            screenToShow.style.display = 'flex';
+        };
+
+        const showHome = () => {
+            showScreen(homeScreen);
+        };
+
+        const startQuiz = () => {
+            previousScreen = 'home';
+            startGame();
+        };
+
+        const showHighScoresFromHome = () => {
+            previousScreen = 'home';
+            showHighScores();
+        };
+
+        // Game Functions
+        const startGame = () => {
+            questionCounter = 0;
+            score = 0;
+            availableQuestions = [...questions];
+            showScreen(gameScreen);
+            scoreText.innerText = score;
+            getNewQuestion();
+        };
+
+        const getNewQuestion = () => {
+            questionCounter++;
+
+            if (availableQuestions.length === 0 || questionCounter > MAX_QUESTIONS) {
+                return endGame();
+            }
+
+            questionCounterText.innerText = `${questionCounter}/${MAX_QUESTIONS}`;
+            
+            const questionIndex = Math.floor(Math.random() * availableQuestions.length);
+            currentQuestion = availableQuestions[questionIndex];
+            question.innerText = currentQuestion.question;
+
+            choices.forEach(choice => {
+                const number = choice.dataset["number"];
+                choice.innerText = currentQuestion["choice" + number];
+            });
+
+            availableQuestions.splice(questionIndex, 1);
+            acceptingAnswers = true;
+        };
+
+        const endGame = () => {
+            showScreen(endGameScreen);
+            finalScoreElement.innerText = score;
+            
+            // Reset save button
+            saveBtn.innerHTML = "Save Score";
+            saveBtn.style.background = "#28a745";
+            saveBtn.disabled = false;
+            saveBtn.style.cursor = "pointer";
+        };
+
+        const incrementScore = num => {
+            score += num;
+            scoreText.innerText = score;
+        };
+
+        // Choice Selection
+        const choiceContainers = Array.from(document.getElementsByClassName("choice-container"));
+        
+        choiceContainers.forEach(container => {
+            container.addEventListener("click", e => {
+                if (!acceptingAnswers) return;
+
+                acceptingAnswers = false;
+                const selectedContainer = container;
+                const selectedChoice = container.querySelector('.choice-text');
+                const selectedAnswer = selectedChoice.dataset["number"];
+                
+                const classToApply = selectedAnswer == currentQuestion.answer ? "correct" : "incorrect";
+                
+                if (classToApply === "correct") {
+                    incrementScore(CORRECT_BONUS);
+                }
+                
+                selectedContainer.classList.add(classToApply);
+
+                setTimeout(() => {
+                    selectedContainer.classList.remove(classToApply);
+                    getNewQuestion();
+                }, 1000);
+            });
+        });
+
+        // High Score Management
+        const saveScore = () => {
+            const name = prompt("Enter your name:");
+            if (name && name.trim()) {
+                const highScores = getHighScores();
+                const newScore = {
+                    name: name.trim(),
+                    score: score,
+                    date: new Date().toLocaleDateString(),
+                    time: new Date().toLocaleTimeString()
+                };
+                
+                highScores.push(newScore);
+                highScores.sort((a, b) => b.score - a.score);
+                
+                if (highScores.length > 10) {
+                    highScores.splice(10);
+                }
+                
+                window.gameHighScores = highScores;
+                
+                saveBtn.innerHTML = "✓ Saved!";
+                saveBtn.style.background = "#218838";
+                saveBtn.disabled = true;
+                saveBtn.style.cursor = "not-allowed";
+                
+                const ranking = highScores.findIndex(s => 
+                    s.name === name.trim() && 
+                    s.score === score && 
+                    s.date === newScore.date && 
+                    s.time === newScore.time
+                ) + 1;
+                
+                alert(`Score saved successfully!\nYour score: ${score}\nRanking: #${ranking} out of ${highScores.length}`);
+                
+                setTimeout(() => {
+                    previousScreen = 'end';
+                    showHighScores();
+                }, 1000);
+            }
+        };
+
+        const getHighScores = () => {
+            return window.gameHighScores || [];
+        };
+
+        const showHighScores = () => {
+            showScreen(highscoreScreen);
+            
+            const highScores = getHighScores();
+            highscoreList.innerHTML = "";
+            
+            if (highScores.length === 0) {
+                highscoreList.innerHTML = '<div class="no-scores">No high scores yet. Play a game and save your score!</div>';
+            } else {
+                highScores.forEach((scoreObj, index) => {
+                    const scoreItem = document.createElement("div");
+                    scoreItem.className = "highscore-item";
+                    scoreItem.innerHTML = `
+                        <div>
+                            <span class="highscore-name">#${index + 1} ${scoreObj.name}</span>
+                            <small style="display: block; color: #666; margin-top: 5px;">${scoreObj.date} at ${scoreObj.time || 'Unknown time'}</small>
+                        </div>
+                        <span class="highscore-score">${scoreObj.score}</span>
+                    `;
+                    highscoreList.appendChild(scoreItem);
+                });
+            }
+        };
+
+        const backFromHighScores = () => {
+            if (previousScreen === 'home') {
+                showHome();
+            } else {
+                showScreen(endGameScreen);
+            }
+        };
+
+        const goToNextQuiz = () => {
+            alert("Next Quiz feature coming soon!\n\nThis could:\n• Load a different set of questions\n• Navigate to another quiz page\n• Show advanced level questions\n• Connect to a quiz series");
+        };
+
+        // Initialize high scores
+        const initializeHighScores = () => {
+            if (!window.gameHighScores) {
+                window.gameHighScores = [];
+            }
+        };
+
+        // Event Listeners
+        restartBtn.addEventListener("click", startGame);
+        saveBtn.addEventListener("click", saveScore);
+        highscoreBtn.addEventListener("click", () => {
+            previousScreen = 'end';
+            showHighScores();
+        });
+        backBtn.addEventListener("click", backFromHighScores);
+        nextBtn.addEventListener("click", goToNextQuiz);
+        homeBtn.addEventListener("click", showHome);
+        homeFromScoresBtn.addEventListener("click", showHome);
+
+        // Initialize the game
+        initializeHighScores();
+        showHome();
+    </script>
+</body>
+</html>
